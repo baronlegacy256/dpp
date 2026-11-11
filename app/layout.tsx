@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Digital Product Passport",
-  description: "Digital Product Passport demonstrator",
+  title: {
+    default: "TracePass",
+    template: "%s | TracePass",
+  },
+  description:
+    "TracePass is a Digital Product Passport demonstrator showing a product's origin, journey, sustainability, and compliance data in one scan.",
 };
 
 export default function RootLayout({
@@ -13,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">{children}</body>
     </html>
   );
 }

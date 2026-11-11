@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
-import { industryConfig } from "@/lib/industry";
+import { getIndustryConfig, isIndustryId, type IndustryId } from "@/lib/industry";
 
 type CreateProductBody = {
   name?: string;
   model?: string;
   manufacturer?: string;
+  industry?: string;
   attributes?: Record<string, unknown>;
   passcode?: string;
 };
@@ -47,12 +48,15 @@ export async function POST(request: Request) {
       );
     }
 
+    const industryId: IndustryId = isIndustryId(body.industry) ? body.industry : "electronics";
+    const industry = getIndustryConfig(industryId);
+
     const rawAttributes = body.attributes && typeof body.attributes === "object" && !Array.isArray(body.attributes)
       ? (body.attributes as Record<string, unknown>)
       : {};
 
-    const attributes: Record<string, unknown> = {};
-    for (const field of industryConfig.productFields) {
+    const attributes: Record<string, unknown> = { industry: industryId };
+    for (const field of industry.productFields) {
       const value = rawAttributes[field.key];
       if (value === undefined || value === null) continue;
       if (field.type === "number") {
